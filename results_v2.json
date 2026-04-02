@@ -1,0 +1,84 @@
+{
+  "0_metadata": {
+    "model": "MiniMax/MiniMax-M2.5",
+    "tokenizer": "cl100k_base",
+    "n_samples": 3,
+    "python": "/Users/aks/.gemini/antigravity/scratch/cli_mcp_research/venv/bin/python3",
+    "timestamp": "2026-04-03T00:21:20+0800"
+  },
+  "1_protocol_overhead": {
+    "cli_base_help": {
+      "tokens": 124,
+      "bytes": 545
+    },
+    "cli_search_help": {
+      "tokens": 90,
+      "bytes": 354
+    },
+    "cli_total_progressive_tokens": 214,
+    "mcp_schemas": {
+      "3_tools": {
+        "tokens": 482,
+        "bytes": 1561
+      },
+      "10_tools": {
+        "tokens": 1225,
+        "bytes": 4043
+      },
+      "20_tools": {
+        "tokens": 2280,
+        "bytes": 7550
+      }
+    }
+  },
+  "2_composability": {
+    "cli": {
+      "output": "\"星巴克(新闻大厦店)\"",
+      "latency_llm_decision_avg": 2.71,
+      "latency_pipe_exec_avg": 2.794,
+      "latency_total_avg": 5.505,
+      "llm_tokens_avg": 174,
+      "agent_steps": "1 LLM call (generate cmd) + 1 local pipe (no LLM)"
+    },
+    "mcp": {
+      "output": "北京的第一家星巴克是 **星巴克(新闻大厦店)**。",
+      "latency_total_avg": 6.398,
+      "llm_tokens_avg": 1357,
+      "result_payload_tokens": 115,
+      "agent_steps": "2 LLM calls (decide tool + summarize result)"
+    },
+    "speedup_factor": 1.16,
+    "key_insight": "CLI 节省了第二轮 LLM 推理——'消化并总结 JSON 结果'的步骤被管道 jq 取代"
+  },
+  "3_error_recovery": {
+    "cli": {
+      "error_detection_time": 0.106,
+      "retry_time": 2.349,
+      "total_recovery_time": 2.455,
+      "retry_success": true,
+      "state_contamination": false,
+      "note": "CLI 返回 error JSON + exit code, Agent 读取后无状态重试"
+    },
+    "mcp": {
+      "recovery_turns": 2,
+      "recovery_tokens": 1305,
+      "recovery_time": 3.978,
+      "note": "MCP 错误通过 tool role 返回,模型自主决定是否重试,但每轮累积全部历史 token"
+    }
+  },
+  "4_discovery_pattern": {
+    "cli_progressive_tokens": 214,
+    "mcp_3_tools_tokens": 482,
+    "mcp_3_tools_ratio": 2.3,
+    "mcp_10_tools_tokens": 1225,
+    "mcp_10_tools_ratio": 5.7,
+    "mcp_20_tools_tokens": 2280,
+    "mcp_20_tools_ratio": 10.7
+  },
+  "5_context_pollution": {
+    "mcp_context_tokens": 295,
+    "cli_context_tokens": 271,
+    "delta_tokens": -24,
+    "note": "逐条消息计量,去除不对称 system prompt,公平对比"
+  }
+}

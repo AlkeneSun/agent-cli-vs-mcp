@@ -1,0 +1,99 @@
+{
+  "1_efficiency": {
+    "mcp": {
+      "final_answer": "非常抱歉，我目前无法为您查询北京的星巴克门店信息，因为今天的搜索次数已经用完了（每日查询限制）。\n\n您可以尝试以下方法：\n1. **明天再试**：每天午夜后会重置查询次数\n2. **直接搜索**：您可以在地图应用或搜索引擎中搜索\"北京 星巴克\"来获取信息\n\n如果您需要其他帮助，请随时告诉我！",
+      "latency": 14.571430921554565,
+      "total_tokens": 777,
+      "turns": 2,
+      "tool_invocations": [
+        {
+          "city": "北京",
+          "keywords": "星巴克"
+        }
+      ]
+    },
+    "cli": {
+      "final_answer": "我来帮你搜索北京的星巴克门店。\n<minimax:tool_call>\n<invoke name=\"Bash\">\n<parameter name=\"command\">python cli_tool.py --keywords \"星巴克\" --city \"北京\"</parameter>\n</invoke>\n</minimax:tool_call>",
+      "latency": 2.8002827167510986,
+      "total_tokens": 213,
+      "turns": 1,
+      "tool_invocations": []
+    }
+  },
+  "2_hallucination": {
+    "mcp": {
+      "final_answer": "抱歉，我目前无法为您查询北京南站附近的咖啡馆，因为今天的搜索次数已经达到了限制。\n\n不过，我可以给您一些建议：\n\n1. **使用地图应用**：您可以打开高德地图、百度地图或腾讯地图，搜索\"北京南站\"附近的咖啡馆，这些地图应用会显示详细的咖啡馆信息、评分和距离。\n\n2. **常见连锁咖啡馆**：北京南站附近通常会有星巴克、瑞幸咖啡、太平洋咖啡等连锁店，您可以直接搜索这些品牌。\n\n3. **站内咖啡店**：北京南站候车大厅内也有多家咖啡店，方便您候车时使用。\n\n如果您之后需要我帮助查询其他信息，欢迎随时告诉我！",
+      "latency": 16.140036821365356,
+      "total_tokens": 1404,
+      "turns": 3,
+      "tool_invocations": [
+        {
+          "city": "北京",
+          "keywords": "北京南站 咖啡馆"
+        },
+        {
+          "city": "北京",
+          "keywords": "咖啡馆 北京南站"
+        }
+      ]
+    },
+    "cli": {
+      "final_answer": "我来帮你搜索帝都南站附近的咖啡馆。让我先搜索一下这个地点。\n<minimax:tool_call>\n<invoke name=\"Bash\">\n<parameter name=\"command\">python cli_tool.py --keywords \"咖啡馆\" --city \"北京\"</parameter>\n</invoke>\n</minimax:tool_call>",
+      "latency": 4.55124306678772,
+      "total_tokens": 285,
+      "turns": 1,
+      "tool_invocations": []
+    }
+  },
+  "3_error_recovery": {
+    "mcp": {
+      "final_answer": "很抱歉，我目前无法通过地图数据查询到上海的苹果直营店信息（遇到了查询限制）。不过根据我的了解，上海目前有以下几家苹果Apple Store零售店：\n\n1. **Apple 静安寺店** - 位于静安区南京西路1688号静安嘉里中心\n2. **Apple 浦东店** - 位于浦东新区世纪大道8号ifc商场\n3. **Apple 南京东路店** - 位于黄浦区南京东路300号恒基名人购物中心\n4. **Apple 新天地店** - 位于黄浦区湖滨道新天地广场\n5. **Apple 香港广场店** - 位于黄浦区淮海中路282号香港广场\n\n建议您可以通过苹果官网或Apple Store App查看最新的店铺信息、营业时间和具体地址。也可以直接使用地图应用搜索\"Apple Store\"获取最新位置信息。\n\n您想了解哪家店铺的详细信息呢？",
+      "latency": 29.533406257629395,
+      "total_tokens": 2031,
+      "turns": 4,
+      "tool_invocations": [
+        {
+          "city": "上海",
+          "keywords": "苹果直营店",
+          "force_error": "签名校验失败或者关键字不合法，请重新核对参数"
+        },
+        {
+          "city": "上海",
+          "keywords": "Apple Store"
+        },
+        {
+          "city": "上海",
+          "keywords": "苹果零售店"
+        }
+      ]
+    },
+    "cli": {
+      "final_answer": "抱歉，由于技术原因无法通过工具查询到上海的苹果直营店信息。不过我可以根据已知信息为您介绍上海的苹果直营店：\n\n## 上海苹果直营店（Apple Store）\n\n目前上海共有**4家**苹果官方直营店：\n\n1. **Apple 静安**\n   - 地址：上海市静安区南京西路1699号静安嘉里中心\n\n2. **Apple 浦东**\n   - 地址：上海市浦东新区世纪大道8号ifc商场（国金中心）\n\n3. **Apple 南京东路**\n   - 地址：上海市黄浦区南京东路300号\n\n4. **Apple 五角场**\n   - 地址：上海市杨浦区淞沪路77号万达广场\n\n---\n\n建议您可以通过苹果官网或\"Apple Store\"APP查看具体的营业时间和预约服务。如果需要更详细的信息（如营业时间、联系方式等），我可以帮您进一步查询。",
+      "latency": 9.876498937606812,
+      "total_tokens": 733,
+      "turns": 2,
+      "tool_invocations": [
+        {
+          "keywords": "苹果直营店",
+          "city": "上海"
+        }
+      ]
+    }
+  },
+  "4_context_pollution": {
+    "mcp": {
+      "final_answer": "根据之前的查询结果，杭州的那家酒店叫**杭州康莱德酒店**（属于希尔顿集团），地址位于**新业路228号**。",
+      "latency": 3.1669750213623047,
+      "total_tokens": 684,
+      "turns": 1,
+      "tool_invocations": []
+    },
+    "cli": {
+      "final_answer": "当然记得！是**杭州康莱德酒店(希尔顿集团)**，地址位于**新业路228号**。",
+      "latency": 2.7461960315704346,
+      "total_tokens": 409,
+      "turns": 1,
+      "tool_invocations": []
+    }
+  }
+}
