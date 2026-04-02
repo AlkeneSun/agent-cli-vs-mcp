@@ -18,6 +18,7 @@ def main():
 
     res = search_poi(args.keywords, args.city, force_error=args.force_error)
     print(json.dumps(res, ensure_ascii=False))
+    sys.exit(0 if res.get("status", "") == "success" else 1)
 
 if __name__ == "__main__":
     main()

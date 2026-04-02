@@ -12,6 +12,20 @@ BASE_URL = "https://api-inference.modelscope.cn/v1"
 MODEL = "MiniMax/MiniMax-M2.5"
 client = OpenAI(api_key=API_KEY, base_url=BASE_URL)
 
+_original_create = client.chat.completions.create
+def _robust_create(*args, **kwargs):
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            return _original_create(*args, **kwargs)
+        except Exception as e:
+            if attempt < max_retries - 1:
+                print(f"  [API Error] {e}. Retrying ({attempt+1}/{max_retries})...")
+                time.sleep(2 ** attempt)
+            else:
+                raise e
+client.chat.completions.create = _robust_create
+
 def run_chat_mcp_mode(prompt: str, seed_messages: List[Dict]=None, force_error: str=""):
     messages = seed_messages.copy() if seed_messages else []
     messages.append({"role": "user", "content": prompt})
@@ -141,11 +155,14 @@ python cli_tool.py --keywords "搜索关键字" --city "城市名称"
                 if city_match: invoc_args['city'] = city_match.group(1).rstrip('\'"')
                 tool_invocations.append(invoc_args)
 
-                if force_error and turns == 1:
-                    cmd += f' --force_error "{force_error}"'
+                safe_cmd = ["python", "cli_tool.py"]
+                if invoc_args.get('keywords'): safe_cmd.extend(["--keywords", invoc_args['keywords']])
+                if invoc_args.get('city'): safe_cmd.extend(["--city", invoc_args['city']])
+                if force_error and turns == 1: safe_cmd.extend(["--force_error", force_error])
                 
                 try:
-                    proc = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=15, cwd="/Users/aks/.gemini/antigravity/scratch/cli_mcp_research")
+                    current_dir = os.path.dirname(os.path.abspath(__file__))
+                    proc = subprocess.run(safe_cmd, shell=False, capture_output=True, text=True, timeout=15, cwd=current_dir)
                     output = proc.stdout if proc.returncode == 0 else proc.stderr + proc.stdout
                 except Exception as e:
                     output = str(e)

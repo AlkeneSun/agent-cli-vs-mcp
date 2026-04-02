@@ -52,6 +52,22 @@ BASE_URL = "https://api-inference.modelscope.cn/v1"
 MODEL = "MiniMax/MiniMax-M2.5"
 client = OpenAI(api_key=API_KEY, base_url=BASE_URL)
 
+# ---- Add robust retry wrapper for OpenAI API ----
+_original_create = client.chat.completions.create
+def _robust_create(*args, **kwargs):
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            return _original_create(*args, **kwargs)
+        except Exception as e:
+            if attempt < max_retries - 1:
+                import time
+                print(f"  [API Error] {e}. Retrying ({attempt+1}/{max_retries})...")
+                time.sleep(2 ** attempt)
+            else:
+                raise e
+client.chat.completions.create = _robust_create
+
 # ---- MCP mock ----
 from amap_mcp_server import MockMCPServer
 mcp = MockMCPServer()
