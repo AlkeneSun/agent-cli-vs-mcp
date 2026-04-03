@@ -18,7 +18,7 @@ import statistics
 
 # ---- Resolve paths ----
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-VENV_PYTHON = os.path.join(SCRIPT_DIR, "venv", "bin", "python3")
+CURRENT_PYTHON = sys.executable
 
 # ---- tiktoken for accurate token counting ----
 import tiktoken
@@ -74,16 +74,16 @@ mcp = MockMCPServer()
 
 # ---- Helpers ----
 def run_cli(*args, timeout=15):
-    """Run amap_cli.py with the venv python. Returns (stdout, stderr, returncode, elapsed)."""
-    cmd = [VENV_PYTHON, os.path.join(SCRIPT_DIR, "amap_cli.py")] + list(args)
+    """Run amap_cli.py with current python. Returns (stdout, stderr, returncode, elapsed)."""
+    cmd = [CURRENT_PYTHON, os.path.join(SCRIPT_DIR, "amap_cli.py")] + list(args)
     start = time.time()
     proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout, cwd=SCRIPT_DIR)
     elapsed = time.time() - start
     return proc.stdout, proc.stderr, proc.returncode, elapsed
 
 def run_cli_pipe(pipe_cmd, timeout=30):
-    """Run a full shell pipeline using the venv python. Returns (stdout, stderr, returncode, elapsed)."""
-    full_cmd = pipe_cmd.replace("python ", f"{VENV_PYTHON} ")
+    """Run a full shell pipeline using current python. Returns (stdout, stderr, returncode, elapsed)."""
+    full_cmd = pipe_cmd.replace("python ", f"{CURRENT_PYTHON} ")
     start = time.time()
     proc = subprocess.run(full_cmd, shell=True, capture_output=True, text=True,
                           timeout=timeout, cwd=SCRIPT_DIR)
@@ -306,7 +306,7 @@ def exp3_error_recovery():
     # We call amap_api.search_poi with force_error directly and wrap it
     # as if CLI returned error JSON with exit code 1
     import subprocess as sp
-    error_cmd = f'{VENV_PYTHON} -c "from amap_api import search_poi; import json; print(json.dumps(search_poi(\\"test\\", force_error=\\"INVALID_KEY\\")))"'
+    error_cmd = f'{CURRENT_PYTHON} -c "from amap_api import search_poi; import json; print(json.dumps(search_poi(\\"test\\", force_error=\\"INVALID_KEY\\")))"'
     start_err = time.time()
     proc_err = sp.run(error_cmd, shell=True, capture_output=True, text=True, cwd=SCRIPT_DIR)
     cli_error_time = time.time() - start_err
@@ -471,7 +471,7 @@ def exp5_context_pollution():
 # =========================================================================
 def main():
     print("🔬 CLI vs MCP 量化对比实验 v3 (严谨修正版)")
-    print(f"   Python: {VENV_PYTHON}")
+    print(f"   Python: {CURRENT_PYTHON}")
     print(f"   Model:  {MODEL}")
     print(f"   Tokenizer: cl100k_base (tiktoken)")
     print(f"   Sampling: N=3 per latency measurement")
@@ -481,7 +481,7 @@ def main():
         "model": MODEL,
         "tokenizer": "cl100k_base",
         "n_samples": 3,
-        "python": VENV_PYTHON,
+        "python": CURRENT_PYTHON,
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z")
     }
 
